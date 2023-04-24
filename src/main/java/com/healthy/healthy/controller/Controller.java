@@ -5,6 +5,7 @@ import com.healthy.healthy.model.Data;
 import com.healthy.healthy.model.dataCal;
 import com.healthy.healthy.repository.AlimentiRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,6 +33,26 @@ public class Controller {
     @GetMapping("/listalimenti")
     public List<Alimenti> alimenti() {
         return repo.findAll();
+    }
+
+    @PutMapping("/modifyalimenti/{id}")
+    public ResponseEntity<Alimenti> modifyalimenti(@PathVariable Integer id, @RequestBody Alimenti alimenti) {
+
+        Alimenti alimento = repo.findById(id).get();
+        alimento.setNome(alimenti.getNome());
+        alimento.setCalorie(alimenti.getCalorie());
+        alimento.setPeso(alimenti.getPeso());
+
+        Alimenti alimentomodificato = repo.save(alimento);
+
+        return ResponseEntity.ok().body(alimentomodificato);
+
+
+    }
+
+    @DeleteMapping("/deletealimento/{id}")
+    public void deleteAlimento(@PathVariable("id") int id){
+        repo.deleteById(id);
     }
 
     @PostMapping("/bmi")
