@@ -30,10 +30,8 @@ public class Controller {
     }
 
     @GetMapping("/listalimenti")
-    public List<Alimenti> alimenti(@RequestParam , ) {
-        repo.findAll();
-        System.out.println(repo);
-        return null;
+    public List<Alimenti> alimenti() {
+        return repo.findAll();
     }
 
     @PostMapping("/bmi")
