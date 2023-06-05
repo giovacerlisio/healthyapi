@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -33,6 +34,11 @@ public class Controller {
     @GetMapping("/listalimenti")
     public List<Alimenti> alimenti() {
         return repo.findAll();
+    }
+
+    @GetMapping("/getalimentoby/{id}")
+    public Optional<Alimenti> alimenti(@PathVariable Integer id) {
+        return repo.findById(id);
     }
 
     @PutMapping("/modifyalimenti/{id}")
