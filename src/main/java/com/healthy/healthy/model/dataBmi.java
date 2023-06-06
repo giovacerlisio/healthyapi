@@ -1,6 +1,6 @@
 package com.healthy.healthy.model;
 
-public class Data {
+public class dataBmi {
 
     private int peso;
     private float altezza;

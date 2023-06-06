@@ -1,7 +1,7 @@
 package com.healthy.healthy.controller;
 
 import com.healthy.healthy.model.Alimenti;
-import com.healthy.healthy.model.Data;
+import com.healthy.healthy.model.dataBmi;
 import com.healthy.healthy.model.dataCal;
 import com.healthy.healthy.repository.AlimentiRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,7 +62,7 @@ public class Controller {
     }
 
     @PostMapping("/bmi")
-    public float bmicalc(@RequestBody Data bmicalc) {
+    public float bmicalc(@RequestBody dataBmi bmicalc) {
 
 
         int peso = bmicalc.getPeso();
