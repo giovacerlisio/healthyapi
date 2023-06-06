@@ -4,10 +4,21 @@ import com.healthy.healthy.model.Alimenti;
 import com.healthy.healthy.model.dataBmi;
 import com.healthy.healthy.model.dataCal;
 import com.healthy.healthy.repository.AlimentiRepository;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.pdmodel.common.PDStream;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,7 +30,7 @@ public class Controller {
     private AlimentiRepository repo;
 
     @PostMapping("/alimenti")
-    public Object alimenti(@RequestBody Alimenti alimenti) {
+    public Object alimenti(@RequestBody Alimenti alimenti) throws IOException {
 
 
         String nome = alimenti.getNome();
@@ -28,8 +39,47 @@ public class Controller {
 
         repo.save(alimenti);
 
+
         return null;
     }
+
+
+    @GetMapping("/file")
+    public Resource getFile() throws IOException {
+
+        //Scrittura su un file di testo di una Stringa
+        String str = "Healthy Docs v1.0";
+        BufferedWriter writer = new BufferedWriter(new FileWriter("testo.txt"));
+        writer.write(str);
+        writer.close();
+
+        // Convertire il file di testo in un documento PDF utilizzando Apache PDFBox
+        PDDocument document = new PDDocument();
+        PDPage page = new PDPage(PDRectangle.A4);
+        document.addPage(page);
+
+        try (BufferedReader reader = new BufferedReader(new FileReader("testo.txt"))) {
+            PDPageContentStream contentStream = new PDPageContentStream(document, page);
+            contentStream.setFont(PDType1Font.HELVETICA, 12); // Imposta il font del testo
+            String line;
+            float y = page.getMediaBox().getHeight() - 50; // Posizione y del primo testo
+            while ((line = reader.readLine()) != null) {
+                contentStream.beginText();
+                contentStream.newLineAtOffset(50, y); // Posizione x e y del testo
+                contentStream.showText(line);
+                contentStream.endText();
+                y -= 20; // Spaziatura tra le righe
+            }
+            contentStream.close();
+        }
+
+        document.save("testo.pdf");
+        document.close();
+
+        Resource fileResource = new FileSystemResource("testo.pdf");
+        return fileResource;
+    }
+
 
     @GetMapping("/listalimenti")
     public List<Alimenti> alimenti() {
@@ -60,6 +110,7 @@ public class Controller {
     public void deleteAlimento(@PathVariable("id") int id){
         repo.deleteById(id);
     }
+
 
     @PostMapping("/bmi")
     public float bmicalc(@RequestBody dataBmi bmicalc) {
