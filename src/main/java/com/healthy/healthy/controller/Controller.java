@@ -43,7 +43,6 @@ public class Controller {
         return null;
     }
 
-
     @GetMapping("/file")
     public Resource getFile() throws IOException {
 
